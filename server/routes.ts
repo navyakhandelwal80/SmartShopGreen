@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertCartItemSchema, insertNotificationSchema } from "@shared/schema";
+import { insertCartItemSchema, insertNotificationSchema, insertOrderSchema, updateUserBudgetSchema } from "@shared/schema";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -169,6 +169,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.put("/api/user/budget", async (req, res) => {
+    try {
+      const userId = 1; // Hardcoded for demo
+      const validatedData = updateUserBudgetSchema.parse(req.body);
+      
+      const user = await storage.updateUserBudget(userId, validatedData.budget);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      res.json(user);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid budget data", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to update budget" });
+    }
+  });
+
   // Notifications
   app.get("/api/notifications", async (req, res) => {
     try {
@@ -229,6 +247,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(progress);
     } catch (error) {
       res.status(500).json({ message: "Failed to add garden progress" });
+    }
+  });
+
+  // Orders
+  app.get("/api/orders", async (req, res) => {
+    try {
+      const userId = 1; // Hardcoded for demo
+      const orders = await storage.getUserOrders(userId);
+      res.json(orders);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch orders" });
+    }
+  });
+
+  app.post("/api/orders", async (req, res) => {
+    try {
+      const userId = 1; // Hardcoded for demo
+      const validatedData = insertOrderSchema.parse({
+        ...req.body,
+        userId
+      });
+      
+      const order = await storage.createOrder(validatedData);
+      
+      // Clear the cart after successful order
+      await storage.clearCart(userId);
+      
+      res.json(order);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid order data", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to create order" });
     }
   });
 

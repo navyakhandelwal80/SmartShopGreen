@@ -28,10 +28,11 @@ The application uses a comprehensive schema supporting:
 - **Products**: Sustainable product catalog with eco-ratings, carbon footprint data, and transparency information
 - **Categories**: Product categorization system
 - **Cart**: Shopping cart functionality with user-specific items
-- **Recipes**: Recipe-based shopping integration
+- **Recipes**: Recipe-based shopping integration with preparation time information
 - **Eco Swaps**: Alternative product suggestions for sustainability
 - **Notifications**: User notification system
 - **Garden Progress**: Virtual garden progression tracking
+- **Orders**: Complete order history and transaction tracking
 
 ### Frontend Components
 - **Smart Cart**: Real-time cart management with budget tracking and eco suggestions
@@ -47,6 +48,8 @@ The application uses a comprehensive schema supporting:
 - `/api/recipes` - Recipe management and ingredient mapping
 - `/api/notifications` - User notification system
 - `/api/user` - User profile and preferences management
+- `/api/user/budget` - User budget management and updates
+- `/api/orders` - Order creation and history tracking
 
 ## Data Flow
 
@@ -95,10 +98,29 @@ The application uses a comprehensive schema supporting:
 ```
 Changelog:
 - July 07, 2025. Initial setup
+- July 07, 2025. Enhanced user budget management with manual budget setting functionality
+- July 07, 2025. Added complete order history system with order creation and tracking
+- July 07, 2025. Integrated recipe preparation time display throughout the application
+- July 07, 2025. Created comprehensive user profile section with settings and order history
 ```
+
+## Recent Changes
+
+✓ Smart cart feature prioritized at top of interface
+✓ Manual budget management system with real-time editing
+✓ Complete order history tracking and display
+✓ Recipe preparation time information added to all recipe displays
+✓ Enhanced user profile with separate sections for account settings, budget management, and order history
+✓ Functional checkout process that creates orders and clears cart
+✓ Navigation bar provides access to all major features
 
 ## User Preferences
 
 ```
 Preferred communication style: Simple, everyday language.
+Interface priorities: Smart cart at top, garden features at end
+Navigation: Accessible navigation bar for all features
+Recipe information: Include preparation time with each recipe
+Budget management: Manual budget setting capability
+Order tracking: Complete order history in user profile
 ```

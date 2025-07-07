@@ -95,6 +95,21 @@ export const gardenProgress = pgTable("garden_progress", {
   ecoAction: text("eco_action").notNull(),
 });
 
+export const orders = pgTable("orders", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id),
+  total: decimal("total", { precision: 10, scale: 2 }).notNull(),
+  status: text("status").notNull().default("completed"), // pending, completed, cancelled
+  orderDate: text("order_date").notNull(),
+  items: json("items").$type<{
+    productId: number;
+    productName: string;
+    quantity: number;
+    price: string;
+    imageUrl: string;
+  }[]>().notNull(),
+});
+
 // Insert schemas
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
@@ -123,6 +138,14 @@ export const insertNotificationSchema = createInsertSchema(notifications).omit({
   id: true,
 });
 
+export const insertOrderSchema = createInsertSchema(orders).omit({
+  id: true,
+});
+
+export const updateUserBudgetSchema = z.object({
+  budget: z.string().regex(/^\d+(\.\d{1,2})?$/, "Budget must be a valid decimal number"),
+});
+
 // Types
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -145,3 +168,6 @@ export type Notification = typeof notifications.$inferSelect;
 export type InsertNotification = z.infer<typeof insertNotificationSchema>;
 
 export type GardenProgress = typeof gardenProgress.$inferSelect;
+
+export type Order = typeof orders.$inferSelect;
+export type InsertOrder = z.infer<typeof insertOrderSchema>;

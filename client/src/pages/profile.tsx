@@ -6,6 +6,8 @@ import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useQuery } from "@tanstack/react-query";
 import { type User as UserType } from "@shared/schema";
+import BudgetSettings from "@/components/budget/budget-settings";
+import OrderHistory from "@/components/orders/order-history";
 
 export default function Profile() {
   const { data: user, isLoading } = useQuery<UserType>({
@@ -251,21 +253,7 @@ export default function Profile() {
         </TabsContent>
 
         <TabsContent value="orders">
-          <Card>
-            <CardHeader>
-              <CardTitle>Order History</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-center py-12">
-                <Package className="h-12 w-12 mx-auto text-gray-300 mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">No orders yet</h3>
-                <p className="text-gray-600 mb-6">Start shopping to see your order history here</p>
-                <Button className="bg-eco-green hover:bg-green-600">
-                  Start Shopping
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+          <OrderHistory />
         </TabsContent>
 
         <TabsContent value="achievements">
@@ -326,26 +314,7 @@ export default function Profile() {
               </CardContent>
             </Card>
 
-            <Card>
-              <CardHeader>
-                <CardTitle>Budget Settings</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <label className="text-sm font-medium text-gray-700">Monthly Budget</label>
-                  <div className="mt-1 p-3 border rounded-lg bg-gray-50">${budget.toFixed(2)}</div>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-700">Budget Alerts</label>
-                  <div className="mt-1">
-                    <Badge className="bg-eco-green text-white">Enabled</Badge>
-                  </div>
-                </div>
-                <Button variant="outline" className="w-full">
-                  Update Budget Settings
-                </Button>
-              </CardContent>
-            </Card>
+            <BudgetSettings user={user} />
           </div>
         </TabsContent>
       </Tabs>

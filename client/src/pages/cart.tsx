@@ -5,9 +5,11 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { useCart } from "@/hooks/use-cart";
+import { useOrders } from "@/hooks/use-orders";
 import { useQuery } from "@tanstack/react-query";
 import { type User } from "@shared/schema";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Cart() {
   const { 
@@ -21,6 +23,10 @@ export default function Cart() {
     isUpdatingCart,
     isRemovingFromCart 
   } = useCart();
+
+  const { createOrder, isCreatingOrder } = useOrders();
+  const [, setLocation] = useLocation();
+  const { toast } = useToast();
 
   const { data: user } = useQuery<User>({
     queryKey: ["/api/user"],
@@ -39,8 +45,40 @@ export default function Cart() {
   };
 
   const handleCheckout = () => {
-    // TODO: Implement checkout process
-    alert("Checkout functionality coming soon!");
+    if (cartItems.length === 0) return;
+    
+    const finalTotal = cartTotal + (cartTotal >= 50 ? 0 : 5.99) + (cartTotal * 0.08);
+    
+    const orderItems = cartItems.map(item => ({
+      productId: item.product.id,
+      productName: item.product.name,
+      quantity: item.quantity,
+      price: item.product.price,
+      imageUrl: item.product.imageUrl
+    }));
+
+    createOrder(
+      { 
+        total: finalTotal.toFixed(2), 
+        items: orderItems 
+      },
+      {
+        onSuccess: () => {
+          toast({
+            title: "Order Placed Successfully!",
+            description: "Thank you for your eco-friendly purchase. Check your profile for order details.",
+          });
+          setLocation("/profile");
+        },
+        onError: () => {
+          toast({
+            title: "Checkout Failed",
+            description: "There was an error processing your order. Please try again.",
+            variant: "destructive",
+          });
+        }
+      }
+    );
   };
 
   if (cartItems.length === 0) {
@@ -271,10 +309,10 @@ export default function Cart() {
               <Button 
                 onClick={handleCheckout}
                 className="w-full bg-eco-blue hover:bg-blue-600 text-white py-3 text-lg font-semibold"
-                disabled={remainingBudget < 0}
+                disabled={remainingBudget < 0 || isCreatingOrder}
               >
                 <CreditCard className="w-5 h-5 mr-2" />
-                Proceed to Checkout
+                {isCreatingOrder ? "Processing..." : "Proceed to Checkout"}
               </Button>
 
               <p className="text-xs text-gray-500 text-center">

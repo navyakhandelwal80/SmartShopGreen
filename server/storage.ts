@@ -1,9 +1,9 @@
 import { 
-  users, products, cartItems, recipes, categories, ecoSwaps, notifications, gardenProgress,
+  users, products, cartItems, recipes, categories, ecoSwaps, notifications, gardenProgress, orders,
   type User, type InsertUser, type Product, type InsertProduct, 
   type CartItem, type InsertCartItem, type Recipe, type InsertRecipe,
   type Category, type InsertCategory, type EcoSwap, type Notification, type InsertNotification,
-  type GardenProgress
+  type GardenProgress, type Order, type InsertOrder
 } from "@shared/schema";
 
 export interface IStorage {
@@ -11,7 +11,7 @@ export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
-  updateUserBudget(userId: number, amount: number): Promise<User | undefined>;
+  updateUserBudget(userId: number, budget: string): Promise<User | undefined>;
   updateUserEcoPoints(userId: number, points: number): Promise<User | undefined>;
 
   // Products
@@ -50,6 +50,10 @@ export interface IStorage {
   // Garden Progress
   getUserGardenProgress(userId: number): Promise<GardenProgress[]>;
   addGardenProgress(userId: number, plantType: string, ecoAction: string): Promise<GardenProgress>;
+
+  // Orders
+  getUserOrders(userId: number): Promise<Order[]>;
+  createOrder(order: InsertOrder): Promise<Order>;
 }
 
 export class MemStorage implements IStorage {
@@ -61,6 +65,7 @@ export class MemStorage implements IStorage {
   private ecoSwaps: Map<number, EcoSwap>;
   private notifications: Map<number, Notification>;
   private gardenProgress: Map<number, GardenProgress>;
+  private orders: Map<number, Order>;
   private currentUserId: number;
   private currentProductId: number;
   private currentCartId: number;
@@ -69,6 +74,7 @@ export class MemStorage implements IStorage {
   private currentEcoSwapId: number;
   private currentNotificationId: number;
   private currentGardenId: number;
+  private currentOrderId: number;
 
   constructor() {
     this.users = new Map();
@@ -79,6 +85,7 @@ export class MemStorage implements IStorage {
     this.ecoSwaps = new Map();
     this.notifications = new Map();
     this.gardenProgress = new Map();
+    this.orders = new Map();
     this.currentUserId = 1;
     this.currentProductId = 1;
     this.currentCartId = 1;
@@ -87,6 +94,7 @@ export class MemStorage implements IStorage {
     this.currentEcoSwapId = 1;
     this.currentNotificationId = 1;
     this.currentGardenId = 1;
+    this.currentOrderId = 1;
 
     this.initializeData();
   }
@@ -341,6 +349,59 @@ export class MemStorage implements IStorage {
       const ecoSwap: EcoSwap = { ...swap, id: this.currentEcoSwapId++ };
       this.ecoSwaps.set(ecoSwap.id, ecoSwap);
     });
+
+    // Initialize sample orders
+    const sampleOrders = [
+      {
+        userId: 1,
+        total: "67.98",
+        status: "completed",
+        orderDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days ago
+        items: [
+          {
+            productId: 1,
+            productName: "Organic Vegetable Box",
+            quantity: 2,
+            price: "24.99",
+            imageUrl: "https://images.unsplash.com/photo-1540420773420-3366772f4999?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300"
+          },
+          {
+            productId: 2,
+            productName: "Bamboo Toothbrush Set",
+            quantity: 1,
+            price: "12.99",
+            imageUrl: "https://images.unsplash.com/photo-1556228578-8c89e6adf883?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300"
+          }
+        ]
+      },
+      {
+        userId: 1,
+        total: "89.47",
+        status: "completed",
+        orderDate: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(), // 14 days ago
+        items: [
+          {
+            productId: 3,
+            productName: "Glass Container Set",
+            quantity: 1,
+            price: "39.99",
+            imageUrl: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300"
+          },
+          {
+            productId: 4,
+            productName: "Organic Cotton T-Shirt",
+            quantity: 2,
+            price: "22.49",
+            imageUrl: "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300"
+          }
+        ]
+      }
+    ];
+
+    sampleOrders.forEach(order => {
+      const orderItem: Order = { ...order, id: this.currentOrderId++ };
+      this.orders.set(orderItem.id, orderItem);
+    });
   }
 
   // User methods
@@ -364,11 +425,10 @@ export class MemStorage implements IStorage {
     return user;
   }
 
-  async updateUserBudget(userId: number, amount: number): Promise<User | undefined> {
+  async updateUserBudget(userId: number, budget: string): Promise<User | undefined> {
     const user = this.users.get(userId);
     if (user) {
-      const currentBudget = parseFloat(user.budget);
-      user.budget = (currentBudget - amount).toFixed(2);
+      user.budget = budget;
       this.users.set(userId, user);
     }
     return user;
@@ -548,6 +608,23 @@ export class MemStorage implements IStorage {
     };
     this.gardenProgress.set(progress.id, progress);
     return progress;
+  }
+
+  // Order methods
+  async getUserOrders(userId: number): Promise<Order[]> {
+    return Array.from(this.orders.values())
+      .filter(order => order.userId === userId)
+      .sort((a, b) => new Date(b.orderDate).getTime() - new Date(a.orderDate).getTime());
+  }
+
+  async createOrder(insertOrder: InsertOrder): Promise<Order> {
+    const order: Order = { 
+      ...insertOrder, 
+      id: this.currentOrderId++,
+      orderDate: new Date().toISOString()
+    };
+    this.orders.set(order.id, order);
+    return order;
   }
 }
 
