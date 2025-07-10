@@ -11,7 +11,13 @@ import { Link } from "wouter";
 
 export default function SmartCart() {
   const [isExpanded, setIsExpanded] = useState(true);
-  const { cartItems, cartTotal, cartCount, removeFromCart, isRemovingFromCart } = useCart();
+  const {
+    cartItems,
+    cartTotal,
+    cartCount,
+    removeFromCart,
+    isRemovingFromCart,
+  } = useCart();
 
   const { data: user } = useQuery<User>({
     queryKey: ["/api/user"],
@@ -22,8 +28,9 @@ export default function SmartCart() {
 
   const ecoSuggestion = {
     title: "🌱 Eco Swap Suggestion",
-    message: "Replace plastic bags with reusable cotton bags and save 2.3kg CO₂",
-    action: "Add Eco Alternative"
+    message:
+      "Replace plastic bags with reusable cotton bags and save 2.3kg CO₂",
+    action: "Add Eco Alternative",
   };
 
   return (
@@ -33,9 +40,7 @@ export default function SmartCart() {
         <div className="flex items-center justify-between">
           <h3 className="font-semibold text-gray-900">Smart Cart</h3>
           <div className="flex items-center space-x-2">
-            <Badge className="bg-eco-green text-white">
-              {cartCount} items
-            </Badge>
+            <Badge className="bg-eco-green text-white">{cartCount} items</Badge>
             <Button
               variant="ghost"
               size="icon"
@@ -55,7 +60,9 @@ export default function SmartCart() {
         <div className="mt-3">
           <div className="flex justify-between text-sm text-gray-600 mb-1">
             <span>Budget Used</span>
-            <span>${cartTotal.toFixed(2)} / ${budget.toFixed(2)}</span>
+            <span>
+              ${cartTotal.toFixed(2)} / ${budget.toFixed(2)}
+            </span>
           </div>
           <Progress value={budgetUsed} className="h-2" />
         </div>
@@ -64,6 +71,12 @@ export default function SmartCart() {
       {/* Cart Items */}
       {isExpanded && (
         <>
+          {cartTotal > budget && (
+            <div className="p-3 mb-2 bg-red-100 text-red-800 font-semibold rounded-md mx-4 border border-red-300">
+              ⚠️ Warning: You have exceeded your budget limit!
+            </div>
+          )}
+
           <CardContent className="p-4 max-h-60 overflow-y-auto">
             {cartItems.length === 0 ? (
               <div className="text-center py-8 text-gray-500">
@@ -78,10 +91,13 @@ export default function SmartCart() {
             ) : (
               <div className="space-y-3">
                 {cartItems.map((item) => (
-                  <div key={item.id} className="flex items-center space-x-3 py-2 border-b border-gray-100 last:border-b-0">
-                    <img 
-                      src={item.product.imageUrl} 
-                      alt={item.product.name} 
+                  <div
+                    key={item.id}
+                    className="flex items-center space-x-3 py-2 border-b border-gray-100 last:border-b-0"
+                  >
+                    <img
+                      src={item.product.imageUrl}
+                      alt={item.product.name}
                       className="w-12 h-12 rounded-lg object-cover"
                     />
                     <div className="flex-1">
@@ -90,12 +106,18 @@ export default function SmartCart() {
                       </h4>
                       <div className="flex items-center space-x-2 mt-1">
                         {item.product.isOrganic && (
-                          <Badge variant="secondary" className="text-xs text-green-600 bg-green-100">
+                          <Badge
+                            variant="secondary"
+                            className="text-xs text-green-600 bg-green-100"
+                          >
                             Organic
                           </Badge>
                         )}
                         {item.product.isLocal && (
-                          <Badge variant="secondary" className="text-xs text-blue-600 bg-blue-100">
+                          <Badge
+                            variant="secondary"
+                            className="text-xs text-blue-600 bg-blue-100"
+                          >
                             Local
                           </Badge>
                         )}
