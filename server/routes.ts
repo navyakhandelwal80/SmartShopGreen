@@ -1,8 +1,16 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertCartItemSchema, insertNotificationSchema, insertOrderSchema, updateUserBudgetSchema } from "@shared/schema";
+import {
+  insertCartItemSchema,
+  insertNotificationSchema,
+  insertOrderSchema,
+  updateUserBudgetSchema,
+  users,
+} from "@shared/schema";
 import { z } from "zod";
+import { eq } from "drizzle-orm";
+import { db } from "./db";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Products
@@ -47,11 +55,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Cart - using hardcoded user ID for demo
+  // Cart (demo userId = 1)
   app.get("/api/cart", async (req, res) => {
     try {
-      const userId = 1; // Hardcoded for demo
-      const cartItems = await storage.getCartItems(userId);
+      const cartItems = await storage.getCartItems(1);
       res.json(cartItems);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch cart items" });
@@ -60,21 +67,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/cart", async (req, res) => {
     try {
-      const userId = 1; // Hardcoded for demo
+      const userId = 1;
       const validatedData = insertCartItemSchema.parse({
         ...req.body,
-        userId
+        userId,
       });
-      
+
       const cartItem = await storage.addToCart(validatedData);
-      
-      // Update product stock
+
       const product = await storage.getProduct(cartItem.productId!);
       if (product && product.stock > 0) {
-        await storage.updateProductStock(cartItem.productId!, product.stock - cartItem.quantity);
+        await storage.updateProductStock(
+          cartItem.productId!,
+          product.stock - cartItem.quantity
+        );
       }
 
-      // Award eco points
       if (product?.isOrganic || product?.isLocal) {
         await storage.updateUserEcoPoints(userId, 10);
       }
@@ -82,7 +90,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(cartItem);
     } catch (error) {
       if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: "Invalid cart item data", errors: error.errors });
+        return res
+          .status(400)
+          .json({ message: "Invalid cart item data", errors: error.errors });
       }
       res.status(500).json({ message: "Failed to add item to cart" });
     }
@@ -91,7 +101,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.put("/api/cart/:id", async (req, res) => {
     try {
       const { quantity } = req.body;
-      const cartItem = await storage.updateCartItem(Number(req.params.id), quantity);
+      const cartItem = await storage.updateCartItem(
+        Number(req.params.id),
+        quantity
+      );
       if (!cartItem) {
         return res.status(404).json({ message: "Cart item not found" });
       }
@@ -115,8 +128,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/cart", async (req, res) => {
     try {
-      const userId = 1; // Hardcoded for demo
-      await storage.clearCart(userId);
+      await storage.clearCart(1);
       res.json({ success: true });
     } catch (error) {
       res.status(500).json({ message: "Failed to clear cart" });
@@ -145,7 +157,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Eco swaps
+  // Eco Swaps
   app.get("/api/eco-swaps/:productId", async (req, res) => {
     try {
       const ecoSwaps = await storage.getEcoSwaps(Number(req.params.productId));
@@ -155,33 +167,85 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // User info
+  // User
   app.get("/api/user", async (req, res) => {
     try {
-      const userId = 1; // Hardcoded for demo
-      const user = await storage.getUser(userId);
-      if (!user) {
-        return res.status(404).json({ message: "User not found" });
-      }
+      const user = await storage.getUser(1);
+      if (!user) return res.status(404).json({ message: "User not found" });
       res.json(user);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch user" });
     }
   });
 
+  // Reward user for accepting eco-friendly choice
+  app.post("/api/eco-action", async (req, res) => {
+    try {
+      const userId = 1; // Replace with actual user ID logic later
+
+      const user = await db.query.users.findFirst({
+        where: eq(users.id, userId),
+      });
+
+      if (!user) return res.status(404).json({ message: "User not found" });
+
+      // Safe fallback in case values are null
+      let ecoBadges = user.ecoBadges ?? 0;
+      let seeds = user.seeds ?? 0;
+      let plants = user.plants ?? 0;
+      let fruits = user.fruits ?? 0;
+
+      // 1. Add badge
+      ecoBadges += 1;
+
+      // 2. Badge → seed
+      if (ecoBadges >= 10) {
+        ecoBadges = 0;
+        seeds += 1;
+      }
+
+      // 3. Seeds → plant
+      if (seeds >= 3) {
+        seeds = 0;
+        plants += 1;
+      }
+
+      // 4. Plants → fruit (reward)
+      if (plants >= 3) {
+        plants = 0;
+        fruits += 1;
+
+        // Optional: Store this reward in a new "fruit_rewards" table
+        // Or trigger notification about the voucher
+      }
+
+      // Update user progress
+      await db
+        .update(users)
+        .set({ ecoBadges, seeds, plants, fruits })
+        .where(eq(users.id, userId));
+
+      res.json({
+        message: "Eco action rewarded successfully!",
+        progress: { ecoBadges, seeds, plants, fruits },
+      });
+    } catch (error) {
+      console.error("Eco action error:", error);
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  });
+
   app.put("/api/user/budget", async (req, res) => {
     try {
-      const userId = 1; // Hardcoded for demo
       const validatedData = updateUserBudgetSchema.parse(req.body);
-      
-      const user = await storage.updateUserBudget(userId, validatedData.budget);
-      if (!user) {
-        return res.status(404).json({ message: "User not found" });
-      }
+      const user = await storage.updateUserBudget(1, validatedData.budget);
+      if (!user) return res.status(404).json({ message: "User not found" });
       res.json(user);
     } catch (error) {
       if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: "Invalid budget data", errors: error.errors });
+        return res
+          .status(400)
+          .json({ message: "Invalid budget data", errors: error.errors });
       }
       res.status(500).json({ message: "Failed to update budget" });
     }
@@ -190,8 +254,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Notifications
   app.get("/api/notifications", async (req, res) => {
     try {
-      const userId = 1; // Hardcoded for demo
-      const notifications = await storage.getUserNotifications(userId);
+      const notifications = await storage.getUserNotifications(1);
       res.json(notifications);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch notifications" });
@@ -200,17 +263,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/notifications", async (req, res) => {
     try {
-      const userId = 1; // Hardcoded for demo
       const validatedData = insertNotificationSchema.parse({
         ...req.body,
-        userId
+        userId: 1,
       });
-      
       const notification = await storage.createNotification(validatedData);
       res.json(notification);
     } catch (error) {
       if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: "Invalid notification data", errors: error.errors });
+        return res
+          .status(400)
+          .json({ message: "Invalid notification data", errors: error.errors });
       }
       res.status(500).json({ message: "Failed to create notification" });
     }
@@ -231,8 +294,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Garden progress
   app.get("/api/garden", async (req, res) => {
     try {
-      const userId = 1; // Hardcoded for demo
-      const progress = await storage.getUserGardenProgress(userId);
+      const progress = await storage.getUserGardenProgress(1);
       res.json(progress);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch garden progress" });
@@ -241,9 +303,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/garden", async (req, res) => {
     try {
-      const userId = 1; // Hardcoded for demo
       const { plantType, ecoAction } = req.body;
-      const progress = await storage.addGardenProgress(userId, plantType, ecoAction);
+      const progress = await storage.addGardenProgress(1, plantType, ecoAction);
       res.json(progress);
     } catch (error) {
       res.status(500).json({ message: "Failed to add garden progress" });
@@ -253,8 +314,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Orders
   app.get("/api/orders", async (req, res) => {
     try {
-      const userId = 1; // Hardcoded for demo
-      const orders = await storage.getUserOrders(userId);
+      const orders = await storage.getUserOrders(1);
       res.json(orders);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch orders" });
@@ -263,23 +323,66 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/orders", async (req, res) => {
     try {
-      const userId = 1; // Hardcoded for demo
       const validatedData = insertOrderSchema.parse({
         ...req.body,
-        userId
+        userId: 1,
       });
-      
       const order = await storage.createOrder(validatedData);
-      
-      // Clear the cart after successful order
-      await storage.clearCart(userId);
-      
+      await storage.clearCart(1);
       res.json(order);
     } catch (error) {
       if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: "Invalid order data", errors: error.errors });
+        return res
+          .status(400)
+          .json({ message: "Invalid order data", errors: error.errors });
       }
       res.status(500).json({ message: "Failed to create order" });
+    }
+  });
+
+  // Eco choice reward route (final version)
+  app.post("/api/eco-choice", async (req, res) => {
+    try {
+      const userId = 1;
+      const user = await db.query.users.findFirst({
+        where: eq(users.id, userId),
+      });
+
+      if (!user) return res.status(404).json({ message: "User not found" });
+
+      let ecoBadges = user.ecoBadges ?? 0;
+      let seeds = user.seeds ?? 0;
+      let plants = user.plants ?? 0;
+      let fruits = user.fruits ?? 0;
+
+      ecoBadges += 1;
+      if (ecoBadges >= 10) {
+        ecoBadges = 0;
+        seeds += 1;
+      }
+
+      if (seeds >= 3) {
+        seeds = 0;
+        plants += 1;
+      }
+
+      if (plants >= 3) {
+        plants = 0;
+        fruits += 1;
+      }
+
+      await db
+        .update(users)
+        .set({ ecoBadges, seeds, plants, fruits })
+        .where(eq(users.id, userId));
+
+      res.json({
+        message: "Eco action rewarded successfully",
+        progress: { ecoBadges, seeds, plants, fruits },
+      });
+    } catch (error) {
+      console.error("Eco choice error:", error);
+      res.status(500).json({ message: "Internal Server Error" });
     }
   });
 

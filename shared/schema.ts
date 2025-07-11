@@ -1,6 +1,16 @@
-import { pgTable, text, serial, integer, boolean, decimal, json } from "drizzle-orm/pg-core";
+import {
+  pgTable,
+  serial,
+  text,
+  integer,
+  boolean,
+  decimal,
+  json,
+} from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
+
+// ------------------ TABLES ------------------
 
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
@@ -11,6 +21,10 @@ export const users = pgTable("users", {
   ecoPoints: integer("eco_points").default(0),
   gardenLevel: integer("garden_level").default(1),
   co2Saved: decimal("co2_saved", { precision: 10, scale: 2 }).default("0.00"),
+  ecoBadges: integer("eco_badges").default(0),
+  seeds: integer("seeds").default(0),
+  plants: integer("plants").default(0),
+  fruits: integer("fruits").default(0),
 });
 
 export const categories = pgTable("categories", {
@@ -28,15 +42,18 @@ export const products = pgTable("products", {
   originalPrice: decimal("original_price", { precision: 10, scale: 2 }),
   imageUrl: text("image_url").notNull(),
   categoryId: integer("category_id").references(() => categories.id),
-  carbonFootprint: decimal("carbon_footprint", { precision: 10, scale: 2 }).notNull(),
-  ecoRating: integer("eco_rating").notNull().default(3), // 1-5 stars
+  carbonFootprint: decimal("carbon_footprint", {
+    precision: 10,
+    scale: 2,
+  }).notNull(),
+  ecoRating: integer("eco_rating").notNull().default(3),
   stock: integer("stock").notNull().default(0),
   isOrganic: boolean("is_organic").default(false),
   isLocal: boolean("is_local").default(false),
   isFairTrade: boolean("is_fair_trade").default(false),
   isReusable: boolean("is_reusable").default(false),
   isBiodegradable: boolean("is_biodegradable").default(false),
-  expiryDiscount: integer("expiry_discount").default(0), // percentage
+  expiryDiscount: integer("expiry_discount").default(0),
   expiryDays: integer("expiry_days").default(0),
   qrData: json("qr_data").$type<{
     origin: string;
@@ -58,20 +75,26 @@ export const recipes = pgTable("recipes", {
   name: text("name").notNull(),
   description: text("description").notNull(),
   imageUrl: text("image_url").notNull(),
-  prepTime: integer("prep_time").notNull(), // minutes
-  ingredients: json("ingredients").$type<{
-    name: string;
-    quantity: string;
-    unit: string;
-    productId?: number;
-  }[]>().notNull(),
-  instructions: text("instructions").array().notNull(),
+  prepTime: integer("prep_time").notNull(),
+  ingredients: json("ingredients")
+    .$type<
+      {
+        name: string;
+        quantity: string;
+        unit: string;
+        productId?: number;
+      }[]
+    >()
+    .notNull(),
+  instructions: json("instructions").$type<string[]>().notNull(),
   ecoRating: integer("eco_rating").default(3),
 });
 
 export const ecoSwaps = pgTable("eco_swaps", {
   id: serial("id").primaryKey(),
-  originalProductId: integer("original_product_id").references(() => products.id),
+  originalProductId: integer("original_product_id").references(
+    () => products.id
+  ),
   swapProductId: integer("swap_product_id").references(() => products.id),
   co2Savings: decimal("co2_savings", { precision: 10, scale: 2 }).notNull(),
   description: text("description").notNull(),
@@ -80,7 +103,7 @@ export const ecoSwaps = pgTable("eco_swaps", {
 export const notifications = pgTable("notifications", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").references(() => users.id),
-  type: text("type").notNull(), // 'deal', 'stock', 'budget', 'eco'
+  type: text("type").notNull(),
   title: text("title").notNull(),
   message: text("message").notNull(),
   isRead: boolean("is_read").default(false),
@@ -99,23 +122,32 @@ export const orders = pgTable("orders", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").references(() => users.id),
   total: decimal("total", { precision: 10, scale: 2 }).notNull(),
-  status: text("status").notNull().default("completed"), // pending, completed, cancelled
+  status: text("status").notNull().default("completed"),
   orderDate: text("order_date").notNull(),
-  items: json("items").$type<{
-    productId: number;
-    productName: string;
-    quantity: number;
-    price: string;
-    imageUrl: string;
-  }[]>().notNull(),
+  items: json("items")
+    .$type<
+      {
+        productId: number;
+        productName: string;
+        quantity: number;
+        price: string;
+        imageUrl: string;
+      }[]
+    >()
+    .notNull(),
 });
 
-// Insert schemas
+// ------------------ INSERT SCHEMAS ------------------
+
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
   ecoPoints: true,
   gardenLevel: true,
   co2Saved: true,
+  ecoBadges: true,
+  seeds: true,
+  plants: true,
+  fruits: true,
 });
 
 export const insertProductSchema = createInsertSchema(products).omit({
@@ -138,15 +170,16 @@ export const insertNotificationSchema = createInsertSchema(notifications).omit({
   id: true,
 });
 
-export const insertOrderSchema = createInsertSchema(orders).omit({
-  id: true,
-});
+export const insertOrderSchema = createInsertSchema(orders).omit({ id: true });
 
 export const updateUserBudgetSchema = z.object({
-  budget: z.string().regex(/^\d+(\.\d{1,2})?$/, "Budget must be a valid decimal number"),
+  budget: z
+    .string()
+    .regex(/^\d+(\.\d{1,2})?$/, "Budget must be a valid decimal number"),
 });
 
-// Types
+// ------------------ TYPES ------------------
+
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
 
