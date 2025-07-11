@@ -13,6 +13,17 @@ import { eq } from "drizzle-orm";
 import { db } from "./db";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  app.post("/api/eco-swap/accept", async (req, res) => {
+    const userId = req.body.userId;
+
+    try {
+      await rewardEcoFriendlyAction(userId);
+      res.json({ message: "Eco action rewarded!" });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: "Eco action failed" });
+    }
+  });
   // Products
   app.get("/api/products", async (req, res) => {
     try {
@@ -389,3 +400,5 @@ export async function registerRoutes(app: Express): Promise<Server> {
   const httpServer = createServer(app);
   return httpServer;
 }
+
+import { rewardEcoFriendlyAction } from "../server/utils/ecoGamification"; // adjust path
