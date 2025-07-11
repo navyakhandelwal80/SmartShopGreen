@@ -3,10 +3,16 @@ import { useQuery } from "@tanstack/react-query";
 import { Clock, Users, Star } from "lucide-react";
 import { type Recipe, type Product } from "@shared/schema";
 import RecipeCard from "@/components/recipe/recipe-card";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useCart } from "@/hooks/use-cart";
+import RecipeChatbot from "@/components/recipe/recipe-chatbot";
 
 export default function Recipes() {
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
@@ -21,7 +27,7 @@ export default function Recipes() {
   });
 
   const handleAddIngredientsToCart = (recipe: Recipe) => {
-    recipe.ingredients.forEach(ingredient => {
+    recipe.ingredients.forEach((ingredient) => {
       if (ingredient.productId) {
         addToCart({ productId: ingredient.productId, quantity: 1 });
       }
@@ -29,16 +35,19 @@ export default function Recipes() {
   };
 
   const getProductForIngredient = (productId?: number) => {
-    return productId ? products.find(p => p.id === productId) : null;
+    return productId ? products.find((p) => p.id === productId) : null;
   };
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Page Header */}
       <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold text-gray-900 mb-4">Recipe-Based Shopping</h1>
+        <h1 className="text-4xl font-bold text-gray-900 mb-4">
+          Recipe-Based Shopping
+        </h1>
         <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-          Discover delicious recipes and shop for sustainable ingredients with just one click
+          Discover delicious recipes and shop for sustainable ingredients with
+          just one click
         </p>
       </div>
 
@@ -47,26 +56,36 @@ export default function Recipes() {
         <div className="flex items-center space-x-4 mb-6">
           <div className="text-3xl">🍴</div>
           <div>
-            <h2 className="text-2xl font-semibold text-gray-900">Smart Recipe Shopping</h2>
-            <p className="text-gray-600">Add all recipe ingredients to your cart in one click</p>
+            <h2 className="text-2xl font-semibold text-gray-900">
+              Smart Recipe Shopping
+            </h2>
+            <p className="text-gray-600">
+              Add all recipe ingredients to your cart in one click
+            </p>
           </div>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="bg-white/80 rounded-lg p-4 text-center">
             <div className="text-2xl mb-2">⏱️</div>
             <h3 className="font-semibold text-gray-900">Save Time</h3>
-            <p className="text-sm text-gray-600">No more hunting for ingredients</p>
+            <p className="text-sm text-gray-600">
+              No more hunting for ingredients
+            </p>
           </div>
           <div className="bg-white/80 rounded-lg p-4 text-center">
             <div className="text-2xl mb-2">🌱</div>
             <h3 className="font-semibold text-gray-900">Eco-Friendly</h3>
-            <p className="text-sm text-gray-600">Sustainable ingredient suggestions</p>
+            <p className="text-sm text-gray-600">
+              Sustainable ingredient suggestions
+            </p>
           </div>
           <div className="bg-white/80 rounded-lg p-4 text-center">
             <div className="text-2xl mb-2">💰</div>
             <h3 className="font-semibold text-gray-900">Budget Friendly</h3>
-            <p className="text-sm text-gray-600">Track costs as you plan meals</p>
+            <p className="text-sm text-gray-600">
+              Track costs as you plan meals
+            </p>
           </div>
         </div>
       </div>
@@ -88,9 +107,9 @@ export default function Recipes() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {recipes.map((recipe) => (
-            <RecipeCard 
-              key={recipe.id} 
-              recipe={recipe} 
+            <RecipeCard
+              key={recipe.id}
+              recipe={recipe}
               onClick={() => setSelectedRecipe(recipe)}
             />
           ))}
@@ -98,7 +117,10 @@ export default function Recipes() {
       )}
 
       {/* Recipe Detail Modal */}
-      <Dialog open={!!selectedRecipe} onOpenChange={() => setSelectedRecipe(null)}>
+      <Dialog
+        open={!!selectedRecipe}
+        onOpenChange={() => setSelectedRecipe(null)}
+      >
         <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
           {selectedRecipe && (
             <>
@@ -109,8 +131,8 @@ export default function Recipes() {
               </DialogHeader>
 
               <div className="space-y-6">
-                <img 
-                  src={selectedRecipe.imageUrl} 
+                <img
+                  src={selectedRecipe.imageUrl}
                   alt={selectedRecipe.name}
                   className="w-full h-48 object-cover rounded-lg"
                 />
@@ -134,21 +156,30 @@ export default function Recipes() {
 
                 {/* Ingredients */}
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">Ingredients</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                    Ingredients
+                  </h3>
                   <div className="space-y-2">
                     {selectedRecipe.ingredients.map((ingredient, index) => {
-                      const product = getProductForIngredient(ingredient.productId);
+                      const product = getProductForIngredient(
+                        ingredient.productId
+                      );
                       return (
-                        <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <div
+                          key={index}
+                          className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                        >
                           <div className="flex items-center space-x-3">
                             {product && (
-                              <img 
-                                src={product.imageUrl} 
+                              <img
+                                src={product.imageUrl}
                                 alt={ingredient.name}
                                 className="w-8 h-8 rounded object-cover"
                               />
                             )}
-                            <span className="font-medium">{ingredient.name}</span>
+                            <span className="font-medium">
+                              {ingredient.name}
+                            </span>
                             <span className="text-gray-600">
                               {ingredient.quantity} {ingredient.unit}
                             </span>
@@ -158,9 +189,7 @@ export default function Recipes() {
                               Available - ${product.price}
                             </Badge>
                           ) : (
-                            <Badge variant="secondary">
-                              Not in stock
-                            </Badge>
+                            <Badge variant="secondary">Not in stock</Badge>
                           )}
                         </div>
                       );
@@ -170,7 +199,9 @@ export default function Recipes() {
 
                 {/* Instructions */}
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">Instructions</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                    Instructions
+                  </h3>
                   <ol className="space-y-2">
                     {selectedRecipe.instructions.map((step, index) => (
                       <li key={index} className="flex space-x-3">
@@ -185,7 +216,7 @@ export default function Recipes() {
 
                 {/* Action Buttons */}
                 <div className="flex space-x-3 pt-4 border-t">
-                  <Button 
+                  <Button
                     onClick={() => handleAddIngredientsToCart(selectedRecipe)}
                     className="flex-1 bg-eco-green hover:bg-green-600"
                   >
@@ -200,6 +231,8 @@ export default function Recipes() {
           )}
         </DialogContent>
       </Dialog>
+
+      <RecipeChatbot />
     </div>
   );
 }
