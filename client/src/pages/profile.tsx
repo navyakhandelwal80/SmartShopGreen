@@ -397,7 +397,10 @@ export default function Profile() {
                     <div className="flex space-x-2">
                       <Button
                         variant="outline"
-                        className="flex-1 bg-eco-green text-white"
+                        className="flex-1 
+                        
+                        
+                        "
                         onClick={handleSave}
                       >
                         Save

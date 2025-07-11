@@ -25,7 +25,9 @@ export function useCart() {
 
   const updateCartMutation = useMutation({
     mutationFn: async (data: { id: number; quantity: number }) => {
-      const response = await apiRequest("PUT", `/api/cart/${data.id}`, { quantity: data.quantity });
+      const response = await apiRequest("PUT", `/api/cart/${data.id}`, {
+        quantity: data.quantity,
+      });
       return response.json();
     },
     onSuccess: () => {
@@ -54,13 +56,18 @@ export function useCart() {
   });
 
   const cartTotal = cartItems.reduce((total, item) => {
-    return total + (parseFloat(item.product.price) * item.quantity);
+    return (
+      total + (parseFloat(item.product?.price ?? "0") || 0) * item.quantity
+    );
   }, 0);
 
   const cartCount = cartItems.reduce((count, item) => count + item.quantity, 0);
 
   const totalCo2 = cartItems.reduce((total, item) => {
-    return total + (parseFloat(item.product.carbonFootprint) * item.quantity);
+    return (
+      total +
+      (parseFloat(item.product?.carbonFootprint ?? "0") || 0) * item.quantity
+    );
   }, 0);
 
   return {

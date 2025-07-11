@@ -96,16 +96,17 @@ export default function SmartCart() {
                     className="flex items-center space-x-3 py-2 border-b border-gray-100 last:border-b-0"
                   >
                     <img
-                      src={item.product.imageUrl}
-                      alt={item.product.name}
+                      src={item.product?.imageUrl || "/placeholder.png"}
+                      alt={item.product?.name || "No image"}
                       className="w-12 h-12 rounded-lg object-cover"
                     />
+
                     <div className="flex-1">
                       <h4 className="text-sm font-medium text-gray-900 line-clamp-1">
-                        {item.product.name}
+                        {item.product?.name || "Unnamed item"}
                       </h4>
                       <div className="flex items-center space-x-2 mt-1">
-                        {item.product.isOrganic && (
+                        {item.product?.isOrganic && (
                           <Badge
                             variant="secondary"
                             className="text-xs text-green-600 bg-green-100"
@@ -113,7 +114,7 @@ export default function SmartCart() {
                             Organic
                           </Badge>
                         )}
-                        {item.product.isLocal && (
+                        {item.product?.isLocal && (
                           <Badge
                             variant="secondary"
                             className="text-xs text-blue-600 bg-blue-100"
@@ -122,7 +123,7 @@ export default function SmartCart() {
                           </Badge>
                         )}
                         <span className="text-xs text-gray-500">
-                          ${item.product.price} × {item.quantity}
+                          ${item.product?.price} × {item.quantity}
                         </span>
                       </div>
                     </div>
