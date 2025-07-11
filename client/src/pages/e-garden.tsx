@@ -1,4 +1,14 @@
-import { Leaf, Coins, Award, TreePine, Flower, Sprout, Star, Gift, Target } from "lucide-react";
+import {
+  Leaf,
+  Coins,
+  Award,
+  TreePine,
+  Flower,
+  Sprout,
+  Star,
+  Gift,
+  Target,
+} from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -39,38 +49,191 @@ export default function EGarden() {
 
   const co2Saved = parseFloat(user.co2Saved);
   const nextLevelPoints = user.gardenLevel * 200;
-  const currentLevelProgress = (user.ecoPoints % 200) / 200 * 100;
-  const nextRewardProgress = (user.ecoPoints % 200) / 200 * 100;
-  const nextFreeProductProgress = (user.ecoPoints % 500) / 500 * 100;
+  const currentLevelProgress = ((user.ecoPoints % 200) / 200) * 100;
+  const nextRewardProgress = ((user.ecoPoints % 200) / 200) * 100;
+  const nextFreeProductProgress = ((user.ecoPoints % 500) / 500) * 100;
 
   const plants = [
-    { id: 1, name: "Sunflower", icon: "🌻", level: 3, unlocked: true, description: "Organic purchases" },
-    { id: 2, name: "Oak Tree", icon: "🌳", level: 2, unlocked: true, description: "Reusable choices" },
-    { id: 3, name: "Rose Bush", icon: "🌹", level: 1, unlocked: true, description: "Local products" },
-    { id: 4, name: "Bamboo", icon: "🎋", level: 4, unlocked: true, description: "Zero waste actions" },
-    { id: 5, name: "Lavender", icon: "💜", level: 1, unlocked: true, description: "Fair trade purchases" },
-    { id: 6, name: "Cactus", icon: "🌵", level: 2, unlocked: true, description: "Water conservation" },
-    { id: 7, name: "Pine Tree", icon: "🌲", level: 1, unlocked: true, description: "Carbon neutral choices" },
-    { id: 8, name: "Lily", icon: "🪷", level: 0, unlocked: false, description: "Unlock at Level 8" },
-    { id: 9, name: "Cherry Blossom", icon: "🌸", level: 0, unlocked: false, description: "Unlock at Level 10" },
+    {
+      id: 1,
+      name: "Sunflower",
+      icon: "🌻",
+      level: 3,
+      unlocked: true,
+      description: "Organic purchases",
+    },
+    {
+      id: 2,
+      name: "Oak Tree",
+      icon: "🌳",
+      level: 2,
+      unlocked: true,
+      description: "Reusable choices",
+    },
+    {
+      id: 3,
+      name: "Rose Bush",
+      icon: "🌹",
+      level: 1,
+      unlocked: true,
+      description: "Local products",
+    },
+    {
+      id: 4,
+      name: "Bamboo",
+      icon: "🎋",
+      level: 4,
+      unlocked: true,
+      description: "Zero waste actions",
+    },
+    {
+      id: 5,
+      name: "Lavender",
+      icon: "💜",
+      level: 1,
+      unlocked: true,
+      description: "Fair trade purchases",
+    },
+    {
+      id: 6,
+      name: "Cactus",
+      icon: "🌵",
+      level: 2,
+      unlocked: true,
+      description: "Water conservation",
+    },
+    {
+      id: 7,
+      name: "Pine Tree",
+      icon: "🌲",
+      level: 1,
+      unlocked: true,
+      description: "Carbon neutral choices",
+    },
+    {
+      id: 8,
+      name: "Lily",
+      icon: "🪷",
+      level: 0,
+      unlocked: false,
+      description: "Unlock at Level 8",
+    },
+    {
+      id: 9,
+      name: "Cherry Blossom",
+      icon: "🌸",
+      level: 0,
+      unlocked: false,
+      description: "Unlock at Level 10",
+    },
   ];
 
   const achievements = [
-    { id: 1, name: "Eco Warrior", description: "Made 50 sustainable purchases", icon: "🛡️", completed: true, points: 100 },
-    { id: 2, name: "Carbon Saver", description: "Saved 10kg of CO₂", icon: "🌍", completed: true, points: 150 },
-    { id: 3, name: "Local Hero", description: "Bought 25 local products", icon: "🏪", completed: true, points: 75 },
-    { id: 4, name: "Waste Warrior", description: "Chose reusable options 30 times", icon: "♻️", completed: false, progress: 23, total: 30, points: 200 },
-    { id: 5, name: "Garden Master", description: "Reach Garden Level 10", icon: "👑", completed: false, progress: user.gardenLevel, total: 10, points: 500 },
-    { id: 6, name: "Recipe Explorer", description: "Cook 20 sustainable recipes", icon: "👨‍🍳", completed: false, progress: 12, total: 20, points: 150 },
+    {
+      id: 1,
+      name: "Eco Warrior",
+      description: "Made 50 sustainable purchases",
+      icon: "🛡️",
+      completed: true,
+      points: 100,
+    },
+    {
+      id: 2,
+      name: "Carbon Saver",
+      description: "Saved 10kg of CO₂",
+      icon: "🌍",
+      completed: true,
+      points: 150,
+    },
+    {
+      id: 3,
+      name: "Local Hero",
+      description: "Bought 25 local products",
+      icon: "🏪",
+      completed: true,
+      points: 75,
+    },
+    {
+      id: 4,
+      name: "Waste Warrior",
+      description: "Chose reusable options 30 times",
+      icon: "♻️",
+      completed: false,
+      progress: 23,
+      total: 30,
+      points: 200,
+    },
+    {
+      id: 5,
+      name: "Garden Master",
+      description: "Reach Garden Level 10",
+      icon: "👑",
+      completed: false,
+      progress: user.gardenLevel,
+      total: 10,
+      points: 500,
+    },
+    {
+      id: 6,
+      name: "Recipe Explorer",
+      description: "Cook 20 sustainable recipes",
+      icon: "👨‍🍳",
+      completed: false,
+      progress: 12,
+      total: 20,
+      points: 150,
+    },
   ];
 
   const rewards = [
-    { id: 1, name: "5% Store Credit", cost: 200, description: "Get 5% off your next purchase", icon: "💳", available: user.ecoPoints >= 200 },
-    { id: 2, name: "Free Organic Product", cost: 500, description: "Choose any organic product under $25", icon: "🥕", available: user.ecoPoints >= 500 },
-    { id: 3, name: "Premium Membership", cost: 1000, description: "3 months of premium features", icon: "⭐", available: user.ecoPoints >= 1000 },
-    { id: 4, name: "Eco Starter Kit", cost: 750, description: "Curated sustainable living kit", icon: "📦", available: user.ecoPoints >= 750 },
-    { id: 5, name: "Tree Planting", cost: 300, description: "Plant a real tree in your name", icon: "🌳", available: user.ecoPoints >= 300 },
-    { id: 6, name: "Consultation Call", cost: 1500, description: "1-hour sustainability consultation", icon: "📞", available: user.ecoPoints >= 1500 },
+    {
+      id: 1,
+      name: "5% Store Credit",
+      cost: 200,
+      description: "Get 5% off your next purchase",
+      icon: "💳",
+      available: user.ecoPoints >= 200,
+    },
+    {
+      id: 2,
+      name: "Free Organic Product",
+      cost: 500,
+      description: "Choose any organic product under $25",
+      icon: "🥕",
+      available: user.ecoPoints >= 500,
+    },
+    {
+      id: 3,
+      name: "Premium Membership",
+      cost: 1000,
+      description: "3 months of premium features",
+      icon: "⭐",
+      available: user.ecoPoints >= 1000,
+    },
+    {
+      id: 4,
+      name: "Eco Starter Kit",
+      cost: 750,
+      description: "Curated sustainable living kit",
+      icon: "📦",
+      available: user.ecoPoints >= 750,
+    },
+    {
+      id: 5,
+      name: "Tree Planting",
+      cost: 300,
+      description: "Plant a real tree in your name",
+      icon: "🌳",
+      available: user.ecoPoints >= 300,
+    },
+    {
+      id: 6,
+      name: "Consultation Call",
+      cost: 1500,
+      description: "1-hour sustainability consultation",
+      icon: "📞",
+      available: user.ecoPoints >= 1500,
+    },
   ];
 
   return (
@@ -81,25 +244,31 @@ export default function EGarden() {
           Your Virtual E-Garden 🌱
         </h1>
         <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-          Watch your sustainable choices bloom into a thriving garden and unlock amazing rewards
+          Watch your sustainable choices bloom into a thriving garden and unlock
+          amazing rewards
         </p>
       </div>
 
       {/* Garden Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
-        <Card className="bg-gradient-to-r from-eco-green to-green-600 text-white">
+        <Card
+          className="bg-gradient-to-r from-emerald-400 to-green-600 text-white"
+          shadow-md
+        >
           <CardContent className="p-6 text-center">
             <Leaf className="w-12 h-12 mx-auto mb-4" />
-            <h3 className="text-3xl font-bold mb-2">Level {user.gardenLevel}</h3>
-            <p className="text-green-100">Garden Level</p>
+            <h3 className="text-3xl font-bold mb-2">
+              Level {user.gardenLevel}
+            </h3>
+            <p className="text-white">Garden Level</p>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-r from-eco-blue to-blue-600 text-white">
+        <Card className="bg-gradient-to-r from-sky-400 to-indigo-600 text-white shadow-md">
           <CardContent className="p-6 text-center">
             <Coins className="w-12 h-12 mx-auto mb-4" />
             <h3 className="text-3xl font-bold mb-2">{user.ecoPoints}</h3>
-            <p className="text-blue-100">Eco Points</p>
+            <p className="text-white">Eco Points</p>
           </CardContent>
         </Card>
 
@@ -114,7 +283,9 @@ export default function EGarden() {
         <Card className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white">
           <CardContent className="p-6 text-center">
             <Award className="w-12 h-12 mx-auto mb-4" />
-            <h3 className="text-3xl font-bold mb-2">{achievements.filter(a => a.completed).length}</h3>
+            <h3 className="text-3xl font-bold mb-2">
+              {achievements.filter((a) => a.completed).length}
+            </h3>
             <p className="text-yellow-100">Achievements</p>
           </CardContent>
         </Card>
@@ -162,23 +333,29 @@ export default function EGarden() {
                   <div className="bg-gradient-to-b from-sky-200 to-green-200 rounded-xl p-8 min-h-[400px] relative overflow-hidden">
                     {/* Garden Background */}
                     <div className="absolute inset-0 bg-gradient-to-t from-green-300 via-green-200 to-sky-200"></div>
-                    
+
                     {/* Plants Grid */}
                     <div className="relative z-10 grid grid-cols-3 gap-8 h-full">
                       {plants.map((plant, index) => (
-                        <div 
+                        <div
                           key={plant.id}
                           className={`flex flex-col items-center justify-end transition-all duration-300 ${
-                            plant.unlocked 
-                              ? 'hover:scale-110 cursor-pointer' 
-                              : 'opacity-50 grayscale'
+                            plant.unlocked
+                              ? "hover:scale-110 cursor-pointer"
+                              : "opacity-50 grayscale"
                           }`}
                         >
-                          <div className={`text-6xl mb-2 ${plant.unlocked ? 'animate-pulse' : ''}`}>
-                            {plant.unlocked ? plant.icon : '🌰'}
+                          <div
+                            className={`text-6xl mb-2 ${
+                              plant.unlocked ? "animate-pulse" : ""
+                            }`}
+                          >
+                            {plant.unlocked ? plant.icon : "🌰"}
                           </div>
                           <div className="text-center">
-                            <div className="text-sm font-medium text-gray-700">{plant.name}</div>
+                            <div className="text-sm font-medium text-gray-700">
+                              {plant.name}
+                            </div>
                             {plant.unlocked ? (
                               <Badge variant="secondary" className="text-xs">
                                 Level {plant.level}
@@ -196,7 +373,9 @@ export default function EGarden() {
                     {/* Decorative Elements */}
                     <div className="absolute bottom-4 left-4 text-2xl">🦋</div>
                     <div className="absolute top-8 right-8 text-2xl">☀️</div>
-                    <div className="absolute bottom-8 right-12 text-2xl">🐝</div>
+                    <div className="absolute bottom-8 right-12 text-2xl">
+                      🐝
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -214,7 +393,9 @@ export default function EGarden() {
                       <Sprout className="w-5 h-5 text-green-600" />
                       <span className="text-sm font-medium">Plants Grown</span>
                     </div>
-                    <span className="font-bold text-green-600">{plants.filter(p => p.unlocked).length}</span>
+                    <span className="font-bold text-green-600">
+                      {plants.filter((p) => p.unlocked).length}
+                    </span>
                   </div>
 
                   <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
@@ -223,7 +404,8 @@ export default function EGarden() {
                       <span className="text-sm font-medium">Achievements</span>
                     </div>
                     <span className="font-bold text-blue-600">
-                      {achievements.filter(a => a.completed).length}/{achievements.length}
+                      {achievements.filter((a) => a.completed).length}/
+                      {achievements.length}
                     </span>
                   </div>
 
@@ -232,7 +414,9 @@ export default function EGarden() {
                       <Star className="w-5 h-5 text-yellow-600" />
                       <span className="text-sm font-medium">Total Points</span>
                     </div>
-                    <span className="font-bold text-yellow-600">{user.ecoPoints}</span>
+                    <span className="font-bold text-yellow-600">
+                      {user.ecoPoints}
+                    </span>
                   </div>
                 </CardContent>
               </Card>
@@ -260,13 +444,20 @@ export default function EGarden() {
         <TabsContent value="achievements">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {achievements.map((achievement) => (
-              <Card key={achievement.id} className={achievement.completed ? 'ring-2 ring-eco-green' : ''}>
+              <Card
+                key={achievement.id}
+                className={achievement.completed ? "ring-2 ring-eco-green" : ""}
+              >
                 <CardContent className="p-6">
                   <div className="text-center">
                     <div className="text-4xl mb-4">{achievement.icon}</div>
-                    <h3 className="font-semibold text-gray-900 mb-2">{achievement.name}</h3>
-                    <p className="text-sm text-gray-600 mb-4">{achievement.description}</p>
-                    
+                    <h3 className="font-semibold text-gray-900 mb-2">
+                      {achievement.name}
+                    </h3>
+                    <p className="text-sm text-gray-600 mb-4">
+                      {achievement.description}
+                    </p>
+
                     {achievement.completed ? (
                       <Badge className="bg-green-500 text-white mb-2">
                         Completed • +{achievement.points} points
@@ -275,9 +466,16 @@ export default function EGarden() {
                       <div className="mb-4">
                         <div className="flex justify-between text-sm mb-1">
                           <span>Progress</span>
-                          <span>{achievement.progress}/{achievement.total}</span>
+                          <span>
+                            {achievement.progress}/{achievement.total}
+                          </span>
                         </div>
-                        <Progress value={(achievement.progress / achievement.total) * 100} className="h-2" />
+                        <Progress
+                          value={
+                            (achievement.progress / achievement.total) * 100
+                          }
+                          className="h-2"
+                        />
                         <Badge variant="outline" className="mt-2">
                           {achievement.points} points when completed
                         </Badge>
@@ -304,7 +502,9 @@ export default function EGarden() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="border border-gray-200 rounded-lg p-4">
                     <div className="flex items-center justify-between mb-3">
-                      <span className="font-medium text-gray-700">5% Store Credit</span>
+                      <span className="font-medium text-gray-700">
+                        5% Store Credit
+                      </span>
                       <span className="text-sm text-gray-500">
                         {Math.max(0, 200 - (user.ecoPoints % 200))} points to go
                       </span>
@@ -314,7 +514,9 @@ export default function EGarden() {
 
                   <div className="border border-gray-200 rounded-lg p-4">
                     <div className="flex items-center justify-between mb-3">
-                      <span className="font-medium text-gray-700">Free Eco Product</span>
+                      <span className="font-medium text-gray-700">
+                        Free Eco Product
+                      </span>
                       <span className="text-sm text-gray-500">
                         {Math.max(0, 500 - (user.ecoPoints % 500))} points to go
                       </span>
@@ -327,26 +529,37 @@ export default function EGarden() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {rewards.map((reward) => (
-                <Card key={reward.id} className={reward.available ? 'ring-2 ring-eco-blue' : 'opacity-75'}>
+                <Card
+                  key={reward.id}
+                  className={
+                    reward.available ? "ring-2 ring-eco-blue" : "opacity-75"
+                  }
+                >
                   <CardContent className="p-6 text-center">
                     <div className="text-4xl mb-4">{reward.icon}</div>
-                    <h3 className="font-semibold text-gray-900 mb-2">{reward.name}</h3>
-                    <p className="text-sm text-gray-600 mb-4">{reward.description}</p>
-                    
+                    <h3 className="font-semibold text-gray-900 mb-2">
+                      {reward.name}
+                    </h3>
+                    <p className="text-sm text-gray-600 mb-4">
+                      {reward.description}
+                    </p>
+
                     <div className="flex items-center justify-center space-x-2 mb-4">
                       <Coins className="w-4 h-4 text-yellow-600" />
-                      <span className="font-semibold text-gray-900">{reward.cost} points</span>
+                      <span className="font-semibold text-gray-900">
+                        {reward.cost} points
+                      </span>
                     </div>
 
-                    <Button 
+                    <Button
                       className={`w-full ${
-                        reward.available 
-                          ? 'bg-eco-blue hover:bg-blue-600' 
-                          : 'bg-gray-300 cursor-not-allowed'
+                        reward.available
+                          ? "bg-eco-blue hover:bg-blue-600"
+                          : "bg-gray-300 cursor-not-allowed"
                       }`}
                       disabled={!reward.available}
                     >
-                      {reward.available ? 'Claim Reward' : 'Not Available'}
+                      {reward.available ? "Claim Reward" : "Not Available"}
                     </Button>
                   </CardContent>
                 </Card>
@@ -368,8 +581,12 @@ export default function EGarden() {
                       1
                     </div>
                     <div>
-                      <div className="font-semibold text-gray-900">EcoMaster2024</div>
-                      <div className="text-sm text-gray-600">Level 15 • 3,420 points</div>
+                      <div className="font-semibold text-gray-900">
+                        EcoMaster2024
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        Level 15 • 3,420 points
+                      </div>
                     </div>
                   </div>
                   <div className="text-2xl">🏆</div>
@@ -381,8 +598,12 @@ export default function EGarden() {
                       2
                     </div>
                     <div>
-                      <div className="font-semibold text-gray-900">GreenWarrior</div>
-                      <div className="text-sm text-gray-600">Level 12 • 2,890 points</div>
+                      <div className="font-semibold text-gray-900">
+                        GreenWarrior
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        Level 12 • 2,890 points
+                      </div>
                     </div>
                   </div>
                   <div className="text-2xl">🥈</div>
@@ -394,8 +615,12 @@ export default function EGarden() {
                       3
                     </div>
                     <div>
-                      <div className="font-semibold text-gray-900">SustainableLife</div>
-                      <div className="text-sm text-gray-600">Level 10 • 2,156 points</div>
+                      <div className="font-semibold text-gray-900">
+                        SustainableLife
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        Level 10 • 2,156 points
+                      </div>
                     </div>
                   </div>
                   <div className="text-2xl">🥉</div>
@@ -407,8 +632,12 @@ export default function EGarden() {
                       8
                     </div>
                     <div>
-                      <div className="font-semibold text-gray-900">{user.username} (You)</div>
-                      <div className="text-sm text-gray-600">Level {user.gardenLevel} • {user.ecoPoints} points</div>
+                      <div className="font-semibold text-gray-900">
+                        {user.username} (You)
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        Level {user.gardenLevel} • {user.ecoPoints} points
+                      </div>
                     </div>
                   </div>
                   <div className="text-2xl">🌟</div>
