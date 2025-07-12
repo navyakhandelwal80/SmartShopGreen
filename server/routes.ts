@@ -304,10 +304,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Garden progress
   app.get("/api/garden", async (req, res) => {
+    console.log("GET /api/garden called");
+
     try {
       const progress = await storage.getUserGardenProgress(1);
+      console.log("Garden progress:", progress);
       res.json(progress);
     } catch (error) {
+      console.error("Error in /api/garden:", error);
       res.status(500).json({ message: "Failed to fetch garden progress" });
     }
   });

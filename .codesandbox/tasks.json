@@ -19,7 +19,6 @@
     },
     "build": {
       "name": "build",
-<<<<<<< HEAD
       "command": "npm run build",
       "runAtStart": false
     },
@@ -37,21 +36,6 @@
       "name": "db:push",
       "command": "npm run db:push",
       "runAtStart": false
-=======
-      "command": "npm run build"
-    },
-    "start": {
-      "name": "start",
-      "command": "npm run start"
-    },
-    "check": {
-      "name": "check",
-      "command": "npm run check"
-    },
-    "db:push": {
-      "name": "db:push",
-      "command": "npm run db:push"
->>>>>>> 2cb2746cbab5879d28e6c0cb57eaf14adc29de16
     }
   }
 }
