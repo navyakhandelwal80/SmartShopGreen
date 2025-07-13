@@ -8,11 +8,13 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import EcoProgressCard from "@/components/layout/EcoProgressCard";
 import SmartCart from "@/components/layout/smart-cart";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function Home() {
   const { data: products = [] } = useQuery<Product[]>({
     queryKey: ["/api/products"],
   });
+  const queryClient = useQueryClient();
 
   const { data: categories = [] } = useQuery<Category[]>({
     queryKey: ["/api/categories"],
@@ -201,8 +203,36 @@ export default function Home() {
                   See how your shopping habits contribute to a greener planet.
                 </p>
                 <Link href="/dashboard">
-                  <Button className="bg-eco-green hover:bg-green-600 text-white px-6 py-3">
-                    View Detailed Report
+                  <Button
+                    onClick={async () => {
+                      try {
+                        const res = await fetch("/api/eco-action", {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({}), // you can omit userId since it's hardcoded as `1`
+                        });
+                        if (!res.ok)
+                          throw new Error("Failed to reward eco action");
+                        const data = await res.json();
+
+                        // ✅ Add this: refresh user query
+                        await queryClient.invalidateQueries({
+                          queryKey: ["/api/user"],
+                          refetchType: "all", // or "active" / "inactive" depending on your need
+                        });
+
+                        alert(
+                          "✅ Eco action rewarded!\n" +
+                            JSON.stringify(data.progress, null, 2)
+                        );
+                      } catch (error) {
+                        console.error(error);
+                        alert("❌ Failed to reward eco action");
+                      }
+                    }}
+                    className="bg-eco-green text-white hover:bg-green-600 transition-colors"
+                  >
+                    🎁 Reward Eco Action
                   </Button>
                 </Link>
               </div>
