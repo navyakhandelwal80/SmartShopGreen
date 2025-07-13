@@ -192,19 +192,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Reward user for accepting eco-friendly choice
   app.post("/api/eco-action", async (req, res) => {
     console.log("==> /api/eco-action called");
-    try {
-      const userId = 1; // Hard-coded demo user
 
-      console.log("Fetching user with ID:", userId);
+    try {
+      const userId = 1; // Or whatever user logic you have
+      console.log(`Fetching user with ID: ${userId}`);
+
       const user = await db.query.users.findFirst({
         where: eq(users.id, userId),
       });
-      console.log("User fetched:", user);
 
       if (!user) {
         console.log("User not found!");
         return res.status(404).json({ message: "User not found" });
       }
+
+      console.log("User fetched:", user);
 
       let ecoBadges = user.ecoBadges ?? 0;
       let seeds = user.seeds ?? 0;
@@ -219,10 +221,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         ecoBadges = 0;
         seeds += 1;
       }
+
       if (seeds >= 3) {
         seeds = 0;
         plants += 1;
       }
+
       if (plants >= 3) {
         plants = 0;
         fruits += 1;
@@ -232,10 +236,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       await db
         .update(users)
-        .set({ ecoBadges, seeds, plants, fruits })
+        .set({
+          ecoBadges,
+          seeds,
+          plants,
+          fruits,
+        })
         .where(eq(users.id, userId));
 
-      console.log("User progress updated in DB");
+      console.log("Database update successful.");
 
       res.json({
         message: "Eco action rewarded successfully!",
@@ -243,7 +252,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error) {
       console.error("❌ Error in /api/eco-action:", error);
-      res.status(500).json({ message: "Internal Server Error" });
+      res
+        .status(500)
+        .json({ message: "Internal Server Error", error: String(error) });
     }
   });
 
