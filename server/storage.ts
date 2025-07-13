@@ -144,26 +144,6 @@ export class MemStorage implements IStorage {
       { name: "Personal Care", icon: "fas fa-shower", color: "eco-blue" },
       { name: "Kitchen", icon: "fas fa-utensils", color: "eco-green" },
       { name: "Baby & Kids", icon: "fas fa-baby", color: "eco-blue" },
-      {
-        name: "Reusables",
-        icon: "♻️",
-        color: "green",
-      },
-      {
-        name: "Personal Care",
-        icon: "🧴",
-        color: "blue",
-      },
-      { name: "Vegetables", icon: "🥦", color: "#A3D9A5" },
-      { name: "Fruits", icon: "🍎", color: "#F28C8C" },
-      { name: "Grains", icon: "🌾", color: "#F2E394" },
-      { name: "Dairy", icon: "🥛", color: "#C2E7FF" },
-      { name: "Snacks", icon: "🍪", color: "#F7D794" },
-      { name: "Drinks", icon: "🥤", color: "#D3A4FF" },
-      { name: "Bakery", icon: "🍞", color: "#FFBCBC" },
-      { name: "Meat", icon: "🥩", color: "#FF9F9F" },
-      { name: "Seafood", icon: "🐟", color: "#A0E7E5" },
-      { name: "Frozen", icon: "❄️", color: "#B2EBF2" },
     ];
 
     categoriesData.forEach((cat) => {
