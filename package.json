@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "build": "vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist",
-    "dev": "dotenv -e server/.env tsx watch server/index.ts",
+    "dev": "dotenv -e .env -- tsx watch server/index.ts",
     "start": "dotenv -e server/.env tsx server/index.ts",
     "seed": "dotenv -e server/.env tsx server/seeds.ts",
     "check": "tsc",
