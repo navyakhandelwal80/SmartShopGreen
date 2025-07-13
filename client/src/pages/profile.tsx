@@ -61,13 +61,21 @@ export default function Profile() {
   const [editUsername, setEditUsername] = useState(user.username ?? "");
   const [editEmail, setEditEmail] = useState(user.email ?? "");
 
-  const handleSave = () => {
+  /*const handleSave = () => {
     console.log("Saving updated user info:", {
       username: editUsername,
       email: editEmail,
     });
     // You can call an API here to actually save changes.
     setIsEditing(false);
+  };*/
+  const handleSave = async () => {
+    await fetch(`/api/user/${user.id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username: editUsername, email: editEmail }),
+    });
+    alert("✅ Profile updated!");
   };
 
   return (
@@ -103,49 +111,43 @@ export default function Profile() {
 
       {/* Stats Overview */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <Card>
+        <Card className="bg-gradient-to-r from-pink-400 to-purple-600 text-white">
           <CardContent className="p-6 text-center">
-            <div className="w-12 h-12 bg-eco-light-green rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="w-12 h-12 mx-auto mb-4">
               <CreditCard className="w-6 h-6 text-eco-green" />
             </div>
-            <h3 className="text-2xl font-bold text-gray-900">
-              ${budget.toFixed(2)}
-            </h3>
-            <p className="text-sm text-gray-600">Remaining Budget</p>
+            <h3 className="text-3xl font-bold mb-2">${budget.toFixed(2)}</h3>
+            <p className="text-green-100">Remaining Budget</p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-gradient-to-r from-green-500 to-emerald-600 text-white">
           <CardContent className="p-6 text-center">
-            <div className="w-12 h-12 bg-eco-light-green rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="w-12 h-12 mx-auto mb-4">
               <Leaf className="w-6 h-6 text-eco-green" />
             </div>
-            <h3 className="text-2xl font-bold text-gray-900">
-              {co2Saved.toFixed(1)}kg
-            </h3>
-            <p className="text-sm text-gray-600">CO₂ Saved</p>
+            <h3 className="text-3xl font-bold mb-2">{co2Saved.toFixed(1)}kg</h3>
+            <p className="text-green-100">CO₂ Saved</p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white">
           <CardContent className="p-6 text-center">
-            <div className="w-12 h-12 bg-eco-light-blue rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="w-12 h-12 mx-auto mb-4">
               <Award className="w-6 h-6 text-eco-blue" />
             </div>
-            <h3 className="text-2xl font-bold text-gray-900">
-              {user.ecoPoints}
-            </h3>
-            <p className="text-sm text-gray-600">Eco Points</p>
+            <h3 className="text-3xl font-bold mb-2">{user.ecoPoints}</h3>
+            <p className="text-yellow-100">Eco Points</p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-gradient-to-r from-sky-400 to-indigo-600 text-white">
           <CardContent className="p-6 text-center">
-            <div className="w-12 h-12 bg-eco-light-blue rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="w-12 h-12 mx-auto mb-4">
               <Package className="w-6 h-6 text-eco-blue" />
             </div>
-            <h3 className="text-2xl font-bold text-gray-900">23</h3>
-            <p className="text-sm text-gray-600">Orders Placed</p>
+            <h3 className="text-3xl font-bold mb-2">2</h3>
+            <p className="text-blue-100">Orders Placed</p>
           </CardContent>
         </Card>
       </div>

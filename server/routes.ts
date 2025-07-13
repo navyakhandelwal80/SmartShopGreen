@@ -189,6 +189,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch user" });
     }
   });
+  //user id
+  app.put("/api/user/:id", async (req, res) => {
+    const { id } = req.params;
+    const { username, email } = req.body;
+
+    try {
+      await db
+        .update(users)
+        .set({ username, email })
+        .where(eq(users.id, Number(id)));
+
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error updating user:", error);
+      res.status(500).json({ message: "Failed to update user" });
+    }
+  });
 
   // Reward user for accepting eco-friendly choice
   app.post("/api/eco-action", async (req, res) => {
