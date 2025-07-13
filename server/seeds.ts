@@ -13,13 +13,17 @@ import {
   gardenProgress,
   orders,
 } from "../shared/schema";
-
+console.log({
+  envFile: process.env.ENV_FILE,
+  dbUrl: process.env.DATABASE_URL,
+  cwd: process.cwd(),
+});
 async function seed() {
   try {
     // Clear existing data
     //await db.delete(users);
     //await db.delete(products);
-    //await db.delete(categories);
+    // await db.delete(categories);
 
     // First insert some categories
     await db.insert(categories).values([
