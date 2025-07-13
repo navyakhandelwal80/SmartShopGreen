@@ -30,21 +30,27 @@ export default function ProductCard({ product }: ProductCardProps) {
     ));
   };
 
-  const hasDiscount = product.originalPrice && parseFloat(product.originalPrice) > parseFloat(product.price);
-  const discountPercentage = hasDiscount 
-    ? Math.round(((parseFloat(product.originalPrice!) - parseFloat(product.price)) / parseFloat(product.originalPrice!)) * 100)
+  const hasDiscount =
+    product.originalPrice &&
+    parseFloat(product.originalPrice) > parseFloat(product.price);
+  const discountPercentage = hasDiscount
+    ? Math.round(
+        ((parseFloat(product.originalPrice!) - parseFloat(product.price)) /
+          parseFloat(product.originalPrice!)) *
+          100
+      )
     : 0;
 
   return (
     <>
       <Card className="bg-white rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden group">
         <div className="relative">
-          <img 
-            src={product.imageUrl} 
-            alt={product.name} 
+          <img
+            src={product.imageUrl}
+            alt={product.name}
             className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
           />
-          
+
           {/* Eco Badges */}
           <div className="absolute top-3 left-3 flex flex-col space-y-1">
             {product.isOrganic && (
@@ -73,7 +79,7 @@ export default function ProductCard({ product }: ProductCardProps) {
               </Badge>
             )}
           </div>
-          
+
           {/* QR Code Scanner */}
           <Button
             variant="ghost"
@@ -83,7 +89,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           >
             <QrCode className="w-4 h-4 text-gray-700" />
           </Button>
-          
+
           {/* Limited Stock Alert */}
           {product.stock > 0 && product.stock <= 10 && (
             <Badge className="absolute bottom-3 left-3 bg-red-500 text-white text-xs px-2 py-1 rounded-full">
@@ -92,13 +98,14 @@ export default function ProductCard({ product }: ProductCardProps) {
           )}
 
           {/* Expiry Discount */}
-          {product.expiryDiscount > 0 && (
+          {(product?.expiryDiscount ?? 0) > 0 && (
             <Badge className="absolute bottom-3 left-3 bg-orange-500 text-white text-xs px-2 py-1 rounded-full">
-              Expires in {product.expiryDays} days - {product.expiryDiscount}% off
+              Expires in {product.expiryDays} days - {product.expiryDiscount}%
+              off
             </Badge>
           )}
         </div>
-        
+
         <CardContent className="p-4">
           <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2">
             {product.name}
@@ -106,7 +113,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           <p className="text-sm text-gray-600 mb-3 line-clamp-2">
             {product.description}
           </p>
-          
+
           {/* Carbon Footprint */}
           <div className="flex items-center space-x-2 mb-3">
             <Leaf className="w-4 h-4 text-green-500" />
@@ -115,7 +122,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             </span>
             <div className="flex">{renderEcoStars(product.ecoRating)}</div>
           </div>
-          
+
           {/* Pricing */}
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center space-x-2">
@@ -134,9 +141,9 @@ export default function ProductCard({ product }: ProductCardProps) {
               </Badge>
             )}
           </div>
-          
+
           {/* Add to Cart */}
-          <Button 
+          <Button
             onClick={handleAddToCart}
             disabled={isAddingToCart || product.stock === 0}
             className="w-full bg-eco-green text-white py-2 rounded-lg font-medium hover:bg-green-600 transition-colors disabled:opacity-50"
@@ -158,9 +165,9 @@ export default function ProductCard({ product }: ProductCardProps) {
         </CardContent>
       </Card>
 
-      <QRModal 
-        isOpen={showQRModal} 
-        onClose={() => setShowQRModal(false)} 
+      <QRModal
+        isOpen={showQRModal}
+        onClose={() => setShowQRModal(false)}
         product={product}
       />
     </>

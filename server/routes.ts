@@ -11,6 +11,7 @@ import {
 import { z } from "zod";
 import { eq } from "drizzle-orm";
 import { db } from "./db";
+import { rewardEcoFriendlyAction } from "../server/utils/ecoGamification"; // adjust path
 
 export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/eco-swap/accept", async (req, res) => {
@@ -416,5 +417,3 @@ export async function registerRoutes(app: Express): Promise<Server> {
   const httpServer = createServer(app);
   return httpServer;
 }
-
-import { rewardEcoFriendlyAction } from "../server/utils/ecoGamification"; // adjust path
