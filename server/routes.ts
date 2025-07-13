@@ -191,57 +191,58 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Reward user for accepting eco-friendly choice
   app.post("/api/eco-action", async (req, res) => {
+    console.log("==> /api/eco-action called");
     try {
-      const userId = 1; // Replace with actual user ID logic later
+      const userId = 1; // Hard-coded demo user
 
+      console.log("Fetching user with ID:", userId);
       const user = await db.query.users.findFirst({
         where: eq(users.id, userId),
       });
+      console.log("User fetched:", user);
 
-      if (!user) return res.status(404).json({ message: "User not found" });
+      if (!user) {
+        console.log("User not found!");
+        return res.status(404).json({ message: "User not found" });
+      }
 
-      // Safe fallback in case values are null
       let ecoBadges = user.ecoBadges ?? 0;
       let seeds = user.seeds ?? 0;
       let plants = user.plants ?? 0;
       let fruits = user.fruits ?? 0;
 
-      // 1. Add badge
+      console.log("Current progress:", { ecoBadges, seeds, plants, fruits });
+
       ecoBadges += 1;
 
-      // 2. Badge → seed
       if (ecoBadges >= 10) {
         ecoBadges = 0;
         seeds += 1;
       }
-
-      // 3. Seeds → plant
       if (seeds >= 3) {
         seeds = 0;
         plants += 1;
       }
-
-      // 4. Plants → fruit (reward)
       if (plants >= 3) {
         plants = 0;
         fruits += 1;
-
-        // Optional: Store this reward in a new "fruit_rewards" table
-        // Or trigger notification about the voucher
       }
 
-      // Update user progress
+      console.log("Updated progress:", { ecoBadges, seeds, plants, fruits });
+
       await db
         .update(users)
         .set({ ecoBadges, seeds, plants, fruits })
         .where(eq(users.id, userId));
+
+      console.log("User progress updated in DB");
 
       res.json({
         message: "Eco action rewarded successfully!",
         progress: { ecoBadges, seeds, plants, fruits },
       });
     } catch (error) {
-      console.error("Eco action error:", error);
+      console.error("❌ Error in /api/eco-action:", error);
       res.status(500).json({ message: "Internal Server Error" });
     }
   });
