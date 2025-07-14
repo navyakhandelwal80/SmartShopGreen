@@ -230,7 +230,7 @@ export default function Home() {
                         alert("❌ Failed to reward eco action");
                       }
                     }}
-                    className="bg-eco-green text-white hover:bg-green-600 transition-colors"
+                    className="bg-gradient-to-r from-eco-green to-green-500 hover:from-green-600 hover:to-green-700 text-white px-8 py-3 rounded-lg font-semibold shadow-md transition-all duration-300"
                   >
                     🎁 Reward Eco Action
                   </Button>

@@ -106,7 +106,7 @@ export default function Cart() {
             lifestyle
           </p>
           <Link href="/products">
-            <Button className="bg-eco-green hover:bg-green-600 text-white px-8 py-3">
+            <Button className="bg-gradient-to-r from-eco-green to-green-500 hover:from-green-600 hover:to-green-700 text-white px-8 py-3 rounded-lg font-semibold shadow-md transition-all duration-300">
               Start Shopping
             </Button>
           </Link>
@@ -255,7 +255,7 @@ export default function Cart() {
                   Replace plastic bags with reusable cotton bags and save 2.3kg
                   CO₂
                 </p>
-                <Button className="bg-eco-green hover:bg-green-600 text-white">
+                <Button className="bg-gradient-to-r from-eco-green to-green-500 hover:from-green-600 hover:to-green-700 text-white px-8 py-3 rounded-lg font-semibold shadow-md transition-all duration-300">
                   Add Eco Alternative
                 </Button>
               </div>
@@ -359,7 +359,20 @@ export default function Cart() {
               {/* Checkout Button */}
               <Button
                 onClick={handleCheckout}
-                className="w-full bg-eco-blue hover:bg-blue-600 text-white py-3 text-lg font-semibold"
+                className="
+                w-full 
+                bg-gradient-to-r from-eco-blue to-blue-500 
+                hover:from-blue-600 hover:to-blue-700 
+                text-white 
+                py-3 
+                px-8  // ← Only include if your original had horizontal padding
+                text-lg 
+                font-semibold 
+                rounded-lg 
+                shadow-md 
+                transition-all 
+                duration-300
+              "
                 disabled={remainingBudget < 0 || isCreatingOrder}
               >
                 <CreditCard className="w-5 h-5 mr-2" />

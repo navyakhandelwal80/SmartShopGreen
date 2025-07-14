@@ -146,7 +146,16 @@ export default function ProductCard({ product }: ProductCardProps) {
           <Button
             onClick={handleAddToCart}
             disabled={isAddingToCart || product.stock === 0}
-            className="w-full bg-eco-green text-white py-2 rounded-lg font-medium hover:bg-green-600 transition-colors disabled:opacity-50"
+            className=" w-full
+            bg-gradient-to-r from-eco-green to-green-500
+            hover:from-green-600 hover:to-green-700
+            text-white
+            py-2
+            rounded-lg
+            font-medium
+            transition-colors
+            duration-300
+            disabled:opacity-50"
           >
             {product.stock === 0 ? (
               "Out of Stock"

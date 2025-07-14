@@ -39,7 +39,9 @@ export default function SmartCart() {
         <div className="flex items-center justify-between">
           <h3 className="font-semibold text-gray-900">Smart Cart</h3>
           <div className="flex items-center space-x-2">
-            <Badge className="bg-eco-green text-white">{cartCount} items</Badge>
+            <Badge className="bg-gradient-to-r from-eco-green to-green-500 hover:from-green-600 hover:to-green-700 text-white px-8 py-3 rounded-lg font-semibold shadow-md transition-all duration-300">
+              {cartCount} items
+            </Badge>
             <Button
               variant="ghost"
               size="icon"
@@ -74,7 +76,7 @@ export default function SmartCart() {
                   <ShoppingCart className="h-12 w-12 mx-auto mb-2 opacity-50" />
                   <p className="text-sm">Your cart is empty</p>
                   <Link href="/products">
-                    <Button className="mt-2 bg-eco-green hover:bg-green-600">
+                    <Button className="bg-gradient-to-r from-eco-green to-green-500 hover:from-green-600 hover:to-green-700 text-white px-8 py-3 rounded-lg font-semibold shadow-md transition-all duration-300">
                       Start Shopping
                     </Button>
                   </Link>
@@ -141,7 +143,17 @@ export default function SmartCart() {
             <p className="text-xs text-gray-600 mb-2">
               {ecoSuggestion.message}
             </p>
-            <Button className="w-full bg-eco-green text-white text-sm py-2 rounded-lg hover:bg-green-600 transition-colors">
+            <Button
+              className=" w-full 
+    bg-gradient-to-r from-eco-green to-green-500 
+    hover:from-green-600 hover:to-green-700 
+    text-white 
+    text-sm 
+    py-2 
+    rounded-lg 
+    transition-colors 
+    duration-300"
+            >
               {ecoSuggestion.action}
             </Button>
           </div>
@@ -155,7 +167,17 @@ export default function SmartCart() {
               </span>
             </div>
             <Link href="/cart">
-              <Button className="w-full bg-eco-blue text-white py-3 rounded-lg font-medium hover:bg-blue-600 transition-colors">
+              <Button
+                className=" w-full 
+    bg-gradient-to-r from-eco-green to-green-500 
+    hover:from-green-600 hover:to-green-700 
+    text-white 
+    text-sm 
+    py-2 
+    rounded-lg 
+    transition-colors 
+    duration-300"
+              >
                 Proceed to Checkout
               </Button>
             </Link>

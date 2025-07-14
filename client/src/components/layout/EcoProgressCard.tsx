@@ -44,7 +44,18 @@ export default function EcoProgressCard() {
           <span>{fruits}</span>
         </div>
         <Link href="/e-garden">
-          <Button className="w-full bg-eco-green hover:bg-green-600 text-white">
+          <Button
+            className="
+    w-full 
+    bg-gradient-to-r from-eco-green to-green-500 
+    hover:from-green-600 hover:to-green-700 
+    text-white 
+    py-3 
+    font-semibold 
+    transition-all 
+    duration-300
+  "
+          >
             View Garden
           </Button>
         </Link>

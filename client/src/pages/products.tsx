@@ -132,7 +132,7 @@ export default function Products() {
               ? "Try adjusting your search terms or browse our categories"
               : "Check back soon for new sustainable products"}
           </p>
-          <Button className="bg-eco-green hover:bg-green-600">
+          <Button className="bg-gradient-to-r from-eco-green to-green-500 hover:from-green-600 hover:to-green-700 text-white px-8 py-3 rounded-lg font-semibold shadow-md transition-all duration-300">
             Browse All Products
           </Button>
         </div>

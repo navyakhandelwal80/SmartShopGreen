@@ -53,7 +53,16 @@ export default function Header() {
                 <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <Button
                   type="submit"
-                  className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-eco-green text-white px-4 py-1.5 rounded-full text-sm hover:bg-green-600 transition-colors"
+                  className="absolute right-2 top-1/2 
+                  transform -translate-y-1/2 
+                  bg-gradient-to-r from-eco-green to-green-500
+                  hover:from-green-600 hover:to-green-700
+                  text-white 
+                  px-4 py-1.5 
+                  rounded-full 
+                  text-sm 
+                  transition-colors
+                  duration-300"
                 >
                   Search
                 </Button>
@@ -87,7 +96,7 @@ export default function Header() {
                   </Badge>
                 )}
               </Button>
-              
+
               <Link href="/profile">
                 <Button variant="ghost" size="icon">
                   <User className="w-5 h-5 text-gray-700 hover:text-eco-green" />
