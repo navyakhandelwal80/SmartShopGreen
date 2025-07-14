@@ -218,7 +218,7 @@ export default function Recipes() {
                 <div className="flex space-x-3 pt-4 border-t">
                   <Button
                     onClick={() => handleAddIngredientsToCart(selectedRecipe)}
-                    className="flex-1 bg-eco-green hover:bg-green-600"
+                    className="bg-gradient-to-r from-eco-green to-green-500 hover:from-green-600 hover:to-green-700 text-white px-8 py-3 rounded-lg font-semibold shadow-md transition-all duration-300"
                   >
                     Add All Ingredients to Cart
                   </Button>

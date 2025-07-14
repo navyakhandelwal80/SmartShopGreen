@@ -722,6 +722,18 @@ export class MemStorage implements IStorage {
         p.description.toLowerCase().includes(lowercaseQuery)
     );
   }
+  async searchProductsByCategoryAndName(
+    categoryId: number,
+    query: string
+  ): Promise<Product[]> {
+    const lowercaseQuery = query.toLowerCase();
+    return Array.from(this.products.values()).filter(
+      (p) =>
+        p.categoryId === categoryId &&
+        (p.name.toLowerCase().includes(lowercaseQuery) ||
+          p.description.toLowerCase().includes(lowercaseQuery))
+    );
+  }
 
   async createProduct(insertProduct: InsertProduct): Promise<Product> {
     const product: Product = { ...insertProduct, id: this.currentProductId++ };
