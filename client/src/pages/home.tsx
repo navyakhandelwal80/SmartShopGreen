@@ -9,24 +9,84 @@ import { Button } from "@/components/ui/button";
 import EcoProgressCard from "@/components/layout/EcoProgressCard";
 import SmartCart from "@/components/layout/smart-cart";
 import { useQueryClient } from "@tanstack/react-query";
+import useEcoProgress from "../hooks/useEcoProgress";
+import { Loader2 } from "lucide-react";
 
 export default function Home() {
-  const { data: products = [] } = useQuery<Product[]>({
-    queryKey: ["/api/products"],
-  });
   const queryClient = useQueryClient();
+  const { rewardAction } = useEcoProgress();
 
-  const { data: categories = [] } = useQuery<Category[]>({
-    queryKey: ["/api/categories"],
+  // Fetch products with proper typing and error handling
+  const {
+    data: products = [],
+    isLoading: isLoadingProducts,
+    error: productsError,
+  } = useQuery<Product[]>({
+    queryKey: ["products"],
+    queryFn: async () => {
+      const response = await fetch("/api/products");
+      if (!response.ok) throw new Error("Failed to fetch products");
+      return response.json();
+    },
+    staleTime: 1000 * 60 * 5, // 5 minutes cache
   });
 
-  const { data: recipes = [] } = useQuery<Recipe[]>({
-    queryKey: ["/api/recipes"],
+  // Fetch categories
+  const { data: categories = [], isLoading: isLoadingCategories } = useQuery<
+    Category[]
+  >({
+    queryKey: ["categories"],
+    queryFn: async () => {
+      const response = await fetch("/api/categories");
+      if (!response.ok) throw new Error("Failed to fetch categories");
+      return response.json();
+    },
   });
 
+  // Fetch recipes
+  const { data: recipes = [], isLoading: isLoadingRecipes } = useQuery<
+    Recipe[]
+  >({
+    queryKey: ["recipes"],
+    queryFn: async () => {
+      const response = await fetch("/api/recipes");
+      if (!response.ok) throw new Error("Failed to fetch recipes");
+      return response.json();
+    },
+  });
+
+  // Derived state
   const featuredProducts = products.slice(0, 4);
   const featuredRecipes = recipes.slice(0, 3);
+  const isLoading =
+    isLoadingProducts || isLoadingCategories || isLoadingRecipes;
 
+  // Reward handler with query invalidation
+  const handleReward = async () => {
+    try {
+      const result = await rewardAction();
+      queryClient.invalidateQueries({ queryKey: ["user"] });
+      alert(`Eco action rewarded! ${JSON.stringify(result.progress)}`);
+    } catch (error) {
+      console.error("Reward failed:", error);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Loader2 className="h-12 w-12 animate-spin text-eco-green" />
+      </div>
+    );
+  }
+
+  if (productsError) {
+    return (
+      <div className="text-center py-10 text-red-500">
+        Failed to load products. Please try again later.
+      </div>
+    );
+  }
   return (
     <>
       <div className="min-h-screen bg-gray-50">
@@ -202,39 +262,23 @@ export default function Home() {
                 <p className="text-gray-600">
                   See how your shopping habits contribute to a greener planet.
                 </p>
-                <Link href="/dashboard">
-                  <Button
-                    onClick={async () => {
-                      try {
-                        const res = await fetch("/api/eco-action", {
-                          method: "POST",
-                          headers: { "Content-Type": "application/json" },
-                          body: JSON.stringify({}), // you can omit userId since it's hardcoded as `1`
-                        });
-                        if (!res.ok)
-                          throw new Error("Failed to reward eco action");
-                        const data = await res.json();
-
-                        // ✅ Add this: refresh user query
-                        await queryClient.invalidateQueries({
-                          queryKey: ["/api/user"],
-                          refetchType: "all", // or "active" / "inactive" depending on your need
-                        });
-
-                        alert(
-                          "✅ Eco action rewarded!\n" +
-                            JSON.stringify(data.progress, null, 2)
-                        );
-                      } catch (error) {
-                        console.error(error);
-                        alert("❌ Failed to reward eco action");
-                      }
-                    }}
-                    className="bg-gradient-to-r from-eco-green to-green-500 hover:from-green-600 hover:to-green-700 text-white px-8 py-3 rounded-lg font-semibold shadow-md transition-all duration-300"
-                  >
-                    🎁 Reward Eco Action
-                  </Button>
-                </Link>
+                <Button
+                  onClick={async () => {
+                    try {
+                      const { progress } = await rewardAction();
+                      alert(
+                        "✅ Eco action rewarded!\n" +
+                          JSON.stringify(progress, null, 2)
+                      );
+                    } catch (error) {
+                      console.error(error);
+                      alert("❌ Failed to reward eco action");
+                    }
+                  }}
+                  className="bg-gradient-to-r from-eco-green to-green-500 hover:from-green-600 hover:to-green-700 text-white px-8 py-3 rounded-lg font-semibold shadow-md transition-all duration-300"
+                >
+                  🎁 Reward Eco Action
+                </Button>
               </div>
             </div>
           </div>
