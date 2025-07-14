@@ -423,7 +423,10 @@ export default function EGarden() {
                   <CardTitle className="text-lg">Quick Actions</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  <Button className="w-full bg-eco-green hover:bg-green-600">
+                  <Button
+                    variant="outline"
+                    className="w-full bg-green-600 text-white hover:bg-green-700 hover:text-white border-green-600"
+                  >
                     Water Plants (+5 points)
                   </Button>
                   <Button variant="outline" className="w-full">
@@ -554,7 +557,7 @@ export default function EGarden() {
                     <Button
                       className={`w-full ${
                         reward.available
-                          ? "bg-eco-blue hover:bg-blue-600"
+                          ? "active:bg-eco-blue focus:bg-eco-blue"
                           : "bg-gray-300 cursor-not-allowed"
                       }`}
                       disabled={!reward.available}

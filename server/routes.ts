@@ -26,7 +26,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   // Products
-  app.get("/api/products", async (req, res) => {
+  /* app.get("/api/products", async (req, res) => {
     try {
       const { category, search } = req.query;
       let products;
@@ -40,7 +40,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       res.json(products);
+    }catch (error) {
+      res.status(500).json({ message: "Failed to fetch products" });
+    }
+  });*/
+
+  // Products
+  app.get("/api/products", async (req, res) => {
+    console.log("Received query:", req.query);
+
+    try {
+      const { category, search } = req.query;
+
+      let products;
+
+      if (search && category) {
+        products = await storage.searchProductsByCategoryAndName(
+          Number(category),
+          search as string
+        );
+      } else if (search) {
+        products = await storage.searchProducts(search as string);
+      } else if (category) {
+        products = await storage.getProductsByCategory(Number(category));
+      } else {
+        products = await storage.getProducts();
+      }
+
+      res.json(products);
     } catch (error) {
+      console.error("Failed to fetch products:", error);
       res.status(500).json({ message: "Failed to fetch products" });
     }
   });

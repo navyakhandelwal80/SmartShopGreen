@@ -35,6 +35,7 @@ export default function Products() {
       const params = new URLSearchParams();
       if (categoryParam) params.append("category", categoryParam);
       if (searchParam) params.append("search", searchParam);
+      //console.log("Fetching /api/products with:", params.toString());
 
       const response = await fetch(`/api/products?${params}`);
       if (!response.ok) throw new Error("Failed to fetch products");
