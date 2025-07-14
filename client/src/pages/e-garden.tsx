@@ -9,6 +9,8 @@ import {
   Gift,
   Target,
 } from "lucide-react";
+import { toast as sonnerToast } from "sonner"; // or from your toast library
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -16,6 +18,7 @@ import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useQuery } from "@tanstack/react-query";
 import { type User } from "@shared/schema";
+import * as React from "react";
 
 export default function EGarden() {
   const { data: user, isLoading } = useQuery<User>({
