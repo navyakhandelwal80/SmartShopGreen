@@ -634,15 +634,16 @@ export default function EGarden() {
 
                 <div className="flex items-center justify-between p-4 bg-eco-light-green rounded-lg border-2 border-eco-green">
                   <div className="flex items-center space-x-4">
-                    <div className="w-8 h-8 bg-eco-green rounded-full flex items-center justify-center text-white font-bold">
+                    <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center text-eco-green font-bold border-2 border-eco-green">
                       8
                     </div>
                     <div>
                       <div className="font-semibold text-gray-900">
-                        {user.username} (You)
+                        {/*user.username*/} Roma (You)
                       </div>
                       <div className="text-sm text-gray-600">
-                        Level {user.gardenLevel} • {user.ecoPoints} points
+                        Level {/*user.gardenLevel*/}7 • {/*user.ecoPoints*/}1240
+                        points
                       </div>
                     </div>
                   </div>
