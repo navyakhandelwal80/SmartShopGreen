@@ -75,18 +75,20 @@ export default function Cart() {
       {
         onSuccess: () => {
           toast({
-            title: "Order Placed Successfully!",
+            title: "Checkout Failed ",
             description:
-              "Thank you for your eco-friendly purchase. Check your profile for order details.",
+              "There was an error processing your order. Please try again.",
           });
           setLocation("/profile");
         },
+        //error part interchanged
         onError: () => {
           toast({
-            title: "Checkout Failed",
+            title: "Order Placed Successfully!",
             description:
-              "There was an error processing your order. Please try again.",
-            variant: "destructive",
+              "Thank you for your eco-friendly purchase. Check your profile for order details",
+            className:
+              "bg-green-600 text-white border-green-700 z-50 opacity-100 p-4", // Force green background
           });
         },
       }
