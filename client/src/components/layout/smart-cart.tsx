@@ -8,7 +8,6 @@ import { useCart } from "@/hooks/use-cart";
 import { useQuery } from "@tanstack/react-query";
 import { type User } from "@shared/schema";
 import { Link } from "wouter";
-import { toast } from "sonner";
 
 export default function SmartCart() {
   const [isExpanded, setIsExpanded] = useState(true);
@@ -145,14 +144,15 @@ export default function SmartCart() {
               {ecoSuggestion.message}
             </p>
             <Button
-              className="w-full bg-gradient-to-r from-eco-green to-green-500 hover:from-green-600 hover:to-green-700 text-white text-sm py-2 rounded-lg transition-colors duration-300"
-              onClick={() => {
-                toast("🌿 Eco Alternative Added!", {
-                  description:
-                    "Thanks for choosing a sustainable option. You've earned an eco badge!",
-                  duration: 4000,
-                });
-              }}
+              className=" w-full 
+    bg-gradient-to-r from-eco-green to-green-500 
+    hover:from-green-600 hover:to-green-700 
+    text-white 
+    text-sm 
+    py-2 
+    rounded-lg 
+    transition-colors 
+    duration-300"
             >
               {ecoSuggestion.action}
             </Button>
